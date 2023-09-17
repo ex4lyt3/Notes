@@ -86,3 +86,100 @@
       - `nmap -T5` - adjust timing template to 5 (controls how fast nmap scans from a range of 0 to 5 )
   - Service Discovery with `nmap`
     - `nmap -sV` - perform service version discovery (on the ports)
+
+### Footprinting & Scanning
+
+- Mapping a Network
+  - Purpose
+    - Turn it into a network properly mapped out
+  - Process
+    - Physical Access
+      - Physical Security
+      - OSINT
+      - Social Engineering
+    - Sniffing
+      - Passive Reconnaissance
+      - Watch network traffic
+      - How? ARP will be utilised
+        - ARP stands for Address Resolution Protocol and maps IP addresses to MAC addresses
+        - Who has 10.10.1.5? Tell 10.10.1.7
+        - 10.10.1.5 is at 00:0c:29:af:ea:d2
+        - Result will be added to ARP table 
+      - ICMP - Internet Control Message Protocol
+        - Tools: `traceroute`, `ping`
+    - Tools
+      - Wireshark
+      - ARP-Scan - Uses ARP to scan which hosts are online on the network
+        - `sudo arp-scan -I eth0 -g 10.10.1.0/24`
+      - Ping - Sends an ICMP packet to the IP address mentioned to check if its online
+      - FPing - Send out pings to multiple hosts at one time
+        - `fping -I tap0 -g 10.142.111.0/24 -a 2>/dev/null`
+        - `2>/dev/null` sends error messages (STDERR) to `/dev/null`
+      - nmap
+      - zenmap - GUI version of nmap
+
+- Port Scanning
+  - Purpose
+    - Identify Operating System
+      - Revealed by Signatures
+      - Revealed by services - detected by banner detected in TCP connection
+    - Identify Services
+  - Process
+    - Mentioned in active information gathering
+  - Tools
+    - nmap
+    - zenmap
+    - massscan
+    - rustscan
+    - autorecon
+
+### Enumeration
+
+- SMB
+  - SMB stands for Server Message Block
+  - Windows implementation of a file share
+  - Common ports related to SMB: 135,139,**445**
+  - Connect to filesystems of other hosts in the network via SMB by mounting their filesystems onto ours
+  - `\\10.10.1.2\C$` - example smb file share address(?)
+  - **NMAP Scripts** - nmap scripts to use in nmap for further enumeration of SMB in that network
+    - `nmap -p 445 --script smb-protocols 10.4.31.90` - example
+    - `smb-protocols` - shows what protocols and dialect it is using
+    - `smb-security-mode` - exposes security level of the smb protocol in that system
+    - `smb-enum-sessions` - enumerate smb sessions (who has logged in etc)
+    - `smb-enum-shares` - enumerate smb shares
+    - `smb-enum-users` - view users available on smb system
+    - `smb-enum-users` - enumerate smb user groups
+    - `smb-enum-services` - enumerate what services are running
+    - `smb-ls` - tell us whats actually in these shares
+    - `--script-args smb_username=administrator,smbpassword=smbserver_771` - script arguments to log in as that user stated
+  - **SMBMap** - enumerates and accesses smb shares on the network
+    - `smbmap -u guest -p "" -d . -H 10.426.50` - example command 
+    - `-x 'ipconfig` - `-x` flag to run a command
+    - `-L`
+    - `-r 'C$` - connect to C drive and view contents of it
+    - `-upload 'local_file' 'C$\local_file'` - uploads local file to C network drive via SMB
+    - `--download 'C$\flag.txt` - download flag.txt from C network drive via SMB
+  - SMB: Samba
+    - Linux version of SMB
+      - `msfconsole` - Metasploit console
+      - `use` - command to use exploit/auxiliary/post-exploit module
+      - `auxiliary/scanner/smb/smb_version` - module to view smb version on the host
+      - `options` - view options
+      - `set` - set options
+      - `nmblookup` - ultilise NETBIOS connection to enumerate the status of the IP address
+      - `smbclient` - connect to client via smb(?) - `smbclient -L ip_address` - list out the SMB shares on the IP address - `smbclient //ip_address/Public -N` - connect to the public share on the IP address
+      - `rpcclient` - connect to client via RPC - `rpcclient -U "" 192.76.242.3` (null session)
+        - `srvinfo` - view serivce information when connected via RPC
+      - `enum4linux` - powerful smb enumerator
+  - Samba Dictionary Attack
+    - We will attempt to bruteforce into an SMB session by using metasploit
+    - `msfconsole` -> `use auxiliary/scanner/smb/smb_login` -> `set RHOSTS ip_address` -> `set smbuser jane, set passfile word_list, set smbuser username`
+    - We can also use Hydra and the rockyou wordlist
+    `hydra -l username -P wordlist ip_address smb`
+    - From the information gathered (that enables us to access the session)
+      - Check if there are any other connections/pipes to this authenticated SMB session -> `auxiliary/scanner/smb/pipe_auditor` -> provides a list of pipes (`\netlogon`, `\lsarpc`, `\eventlog`)
+      - `enum4linux -r -u "username" -p "password" ip_address`
+- FTP
+- SSH
+- HTTP
+- SQL
