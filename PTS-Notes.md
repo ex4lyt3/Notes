@@ -180,6 +180,23 @@
       - Check if there are any other connections/pipes to this authenticated SMB session -> `auxiliary/scanner/smb/pipe_auditor` -> provides a list of pipes (`\netlogon`, `\lsarpc`, `\eventlog`)
       - `enum4linux -r -u "username" -p "password" ip_address`
 - FTP
+  - FTP stands for File Transfer Protocol
+  - Storing files on a server and being able to access them remotely
+  - Default port: **21**
+  - Connect to the FTP port on the ip address -> `ftp ip_address`
+  - Bruteforce FTP session by bruteforcing username and password - `hydra -L user_wordlist(/usr/share/metasploit-framework/data/wordlists/common_users.txt) -P /usr/share/metasploit-framework/data/wordlists/unix_password.txt ip_address ftp`
+  - `get file` - download file to local machine when connected via FTP
+  - `nmap ip_address -p 21 --script ftp-anon` -> check if ftp anonymous login is allowed
 - SSH
+  - SSH stands for Secure Shell
+  - Used for remote administration
+  - Interact with a remote machine over an encrypted channel
+  - Default port: **22**
+  - `ssh username@ip_address` - connect to machine via ssh
+  - `--script ssh-enum-algos` - nmap script to enumerates the algorithm that could have been use to generate the key for the ssh session
+  - `--script ssh-hostkey --script-arg ssh_hostkey=full` - reveal full rsa host key for the ssh session
+  - `--script ssh-auth-methods --script-args="ssh.user=student"` - view authentication methods for user `student`
+  - `hydra -l student - P /usr/share/wordlists/rockyou.txt ip_address ssh` - bruteforce into ssh session as user `student`
+  - `msfconsole`'s `auxiliary/scanner/ssh/ssh_login` can be used for bruteforce attack as well
 - HTTP
 - SQL
