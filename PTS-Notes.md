@@ -153,7 +153,7 @@
     - `smb-ls` - tell us whats actually in these shares
     - `--script-args smb_username=administrator,smbpassword=smbserver_771` - script arguments to log in as that user stated
   - **SMBMap** - enumerates and accesses smb shares on the network
-    - `smbmap -u guest -p "" -d . -H 10.426.50` - example command 
+    - `smbmap -u guest -p "" -d . -H 10.426.50` - example command
     - `-x 'ipconfig` - `-x` flag to run a command
     - `-L`
     - `-r 'C$` - connect to C drive and view contents of it
@@ -199,4 +199,56 @@
   - `hydra -l student - P /usr/share/wordlists/rockyou.txt ip_address ssh` - bruteforce into ssh session as user `student`
   - `msfconsole`'s `auxiliary/scanner/ssh/ssh_login` can be used for bruteforce attack as well
 - HTTP
+  - Stands for HyperText Transfer Protocol
+  - One of the most common protocols
+  - Use to connect to the internet
+  - Common ports: **80**, 443 (HTTPS), 8080 (less common)
+  - Internet Information Services (IIS)
+    - Flexible, secure and manageable Web server framework
+    - Common file extensions found on this server: `.aspx`
+  - `whataweb` - find information about the web server at that IP Address
+  - `http` - sends http request to web server and displays http response
+  - `dirb` OR `dirbuster` - automatically does directory brute-forcing to find the directories of the web server
+  - `browsh --startup-url http://ip_address` - do website enumeration based on a url in your command line by rendering the page in the command line
+  - `nmap` HTTP enumeration scripts
+    - `--script http-enum` - return what HTTP service is running and reveals some common directories that the web server may have
+    - `--script http-headers` - returns HTTP header information (based off the HTTP response?)
+    - `--script http-methods --script-args http-methods.url-path=/directory/` - reveals what http methods are supported
+  - Apache
+    - Type of web server that runs on Linux
 - SQL
+  - MySQL
+    - One of the most common open version of SQL
+    - Runs on Ubuntu
+    - Common on enterprise network
+    - Common ports: **3306**
+    - `mysql -h ip_address -u username` - log in to the mysql database of the host
+      - `show databases` - show databases of the host
+      - `select count(*) from authors` - select count of entries in the `author` database
+      - `select * from authors`
+      - `select load_file("/directory/file")` - loads local file on the system
+    - `msf5 -> auxiliary/scanner/mysql/mysql_writable_dirs` - run a brute froce of all the directories and see if they're writable
+    - `msf5 -> use auxiliary/scanner/mysql/mysql_hashdump` - dumps the hashes of the user accounts
+    - `msf5 -> auxiliary/scanner/mysql/mysql_login` - attempts to log in to the accounts
+    - `setg` - set global variable
+    - `nmap --script=mysql-empty-password` - check what sql accounts require no passwords
+    - `nmap --script=mysql-users --script=args="mysqlusers='root',mysqlpass=''"` - view all the users of the sql database
+    - `nmap --script=mysql-databases --script=args="mysqlusers='root',mysqlpass=''"` - view all the databases of the sql system
+    - `nmap --script=mysql-variables --script=args="mysqlusers='root',mysqlpass=''"` - view the mysql variables on the system
+    - `nmap --script=mysql-dump-hashes --script=args="mysqlusers='root',mysqlpass=''"` - same as the msf5 module mentioned above; dumps hashes of the mysql user
+    - `nmap --script=mysql-audit --script=args="mysql-audit.username='root',mysql-audit.password='',mysql-audit.filename='/usr/share/nmap/nselib/data/mysql-cis.audit"` - audits the mysql database on the system - check if stuff has been configured properly
+    - `hydra -l username -P wordlist ip_address mysql` - same as the msf5 module; brute forces passwords to attempt to log into the mysql database account
+  - MSSQL - Microsoft version of SQL
+    - Common Ports: **1433**
+    - `nmap --script ms-sql-info` - reveals mssql information about the host
+    - `nmap --script ms-sql-ntlm-info --script-args mssql.instance.port=1433` - reveals mssql NTLM information about the host
+    - `nmap --script ms-sql-info --script-args userdb=/root/Desktop/wordlist/common_users.txt,passdb=/root/Desktop/wordlist/100-common-passwords.txt` - atttempts to brute force login into the mssql accounts in the host
+    - `nmap --script ms-sql-empty-password` - attempt to check if empty password logins are allowed
+    - `nmap --script ms-sql-query` - sends a query into the mssql system
+    - `nmap --script ms-sql-dump-hashes` - dump account hashes of the system
+    - `nmap --script ms-sql-xp-cmdshell` - attempts to run commands on the mssql system
+    - Metasploit modules
+      - `auxiliary/scanner/mssql/mssql_login` - brute-force login into mssql accounts in the host
+      - `auxiliary/admin/mmssql/mssql_enum` - enumerates the mssql system
+      - `auxiliary/admin/mssql/mssql_exec` - tries to run commands on the mssql server
+      - `auxiliary/scanner/mssql_enum_domain_accounts` - shows all the domain accounts in the mssql server
