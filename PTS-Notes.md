@@ -104,7 +104,7 @@
         - ARP stands for Address Resolution Protocol and maps IP addresses to MAC addresses
         - Who has 10.10.1.5? Tell 10.10.1.7
         - 10.10.1.5 is at 00:0c:29:af:ea:d2
-        - Result will be added to ARP table 
+        - Result will be added to ARP table
       - ICMP - Internet Control Message Protocol
         - Tools: `traceroute`, `ping`
     - Tools
@@ -252,3 +252,39 @@
       - `auxiliary/admin/mmssql/mssql_enum` - enumerates the mssql system
       - `auxiliary/admin/mssql/mssql_exec` - tries to run commands on the mssql server
       - `auxiliary/scanner/mssql_enum_domain_accounts` - shows all the domain accounts in the mssql server
+
+### Vulnerability Assessment
+
+- Vulnerability
+  - Definition: A weakness in the computational logic found in software and hardware components that when exploited, results in a negative impact to confidentiality, integrity, or availability
+  - Comes from software and/or operating system
+  - Users that find it: DevSecOps engineers, Security researchers, Pentesters, Software Developers, Users (on accident)
+  - **CVE** - Common Vulnerabilities and Exposures
+    - Reference-method for publicly known vulnerabilities and exposures
+    - Websites like *NIST* and *CVE* show these CVEs in detail
+    - Examples: Heartbleed Vulnerability, Log4J Vulnerability (Log4Shell)
+    - Can basically be found online
+    - They have unique, common identifier for each common vulnerability (Also called, CVE names, CVE numbers, CVE-IDs)
+  - Understanding Vulnerability Detail Page
+    - Example: CVE-2021-44228 (Log4J)
+    - Description
+    - Assigning CNA (CVE numbering authority) - the authority giving the CVE
+    - Severity
+    - Weakness Enumeration
+      - Identifying how this could be solved in the future and avoided
+    - Known Affected Software Configurations
+    - Vulnerability Metrics (Exploitability, Impact, etc)
+  - Zero Day Vulnerability
+    - Has not been found or exploited or reported towards
+  - OSI "Layer 8" - the people
+    - They have to be taken into account for vulnerabilities
+    - **Not all vulnerabilities are computer code**
+    - Can be social vulnerabiltiies (social engineering)
+  - Risk Management
+    - Cybersecurity threats do not form the whole of risk management of a business
+    - Reccomendations for cybersecurity should be formalised and everything
+    - Includes Vulnerability Management which includes Vulnerability Assessment - Penetration Test
+  - How to find vulnerabilties
+    - Scanning
+    - Asset Identification + Research
+    - Fuzz Testing (input/handling validation)
